@@ -3,6 +3,7 @@ package algorithms.mazeGenerators;
 * THE run class is the class that crate all the maze 3d 
 */
 public class Run {
+	@SuppressWarnings("unused")
 	private static void testMazeGenerator(Maze3dGenerator mg){
 			// prints the time it takes the algorithm to run
 			System.out.println(mg.measureAlgorithmTime(7,7,7));

@@ -10,9 +10,9 @@ public class SimpleMaze3dGenerator extends AMaze3dGenerator{
 	
 	/**
 	 * This method is used three ints to create a maze
-	 * @param x is the x lenght
-	 * @param y is the y lenght
-	 * @param z is the z lenght
+	 * @param x is the x length
+	 * @param y is the y length
+	 * @param z is the z length
 	 * @return  Maze3d
 	 */
 	public Maze3d generate(int x,int y,int z)
@@ -28,7 +28,8 @@ public class SimpleMaze3dGenerator extends AMaze3dGenerator{
 		// Choosing the start and the end  points of the maze 
 		Postion start= new Postion(r.nextInt(x),r.nextInt(y),r.nextInt(z));
 		Postion end  = new Postion(r.nextInt(x),r.nextInt(y),r.nextInt(z));
-		System.out.println(start.toString());
+		while(start.equals(end))
+			end  = new Postion(r.nextInt(x),r.nextInt(y),r.nextInt(z));
 	    m.setStart(start);
 	    m.setGoal(end);
 		//Setting these points in the maze : setMaze3d(int x, int y, int z, int val) 

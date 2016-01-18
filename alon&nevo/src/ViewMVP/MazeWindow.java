@@ -1,7 +1,5 @@
 package ViewMVP;
 
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.swing.JOptionPane;
 

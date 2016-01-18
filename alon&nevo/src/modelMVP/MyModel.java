@@ -1,6 +1,5 @@
 package modelMVP;
 
-import java.beans.Expression;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.File;
@@ -8,9 +7,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.concurrent.Callable;
@@ -18,14 +14,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Text;
-
-import ViewMVP.SettingsWindow;
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Maze3dGenerator;
 import algorithms.mazeGenerators.MyMaze3dGenerator;
@@ -36,12 +24,9 @@ import algorithms.search.Bfs;
 import algorithms.search.CommonSearcher;
 import algorithms.search.CostComp;
 import algorithms.search.MazeDistanse;
-import algorithms.search.Searchable;
 import algorithms.search.SearchableAdapter;
-import algorithms.search.Searcher;
 import algorithms.search.Solution;
 import presenter.Properties;
-import presenter.Solve_Callable;
 
 public class MyModel extends Observable implements Model
 {
@@ -51,7 +36,6 @@ public class MyModel extends Observable implements Model
 	private ExecutorService ex;
 	private Properties st;
 
-	@SuppressWarnings("unchecked")
 	public MyModel() 
 	{
 		this.hm = new HashMap<String, Maze3d>();
@@ -180,11 +164,11 @@ public class MyModel extends Observable implements Model
 	{
 		if(!hm.containsKey(name))
 		{
-			/*Future <Maze3d> f= ex.submit(new Callable<Maze3d>()
+			Future <Maze3d> f= ex.submit(new Callable<Maze3d>()
 			{
 				@Override
-				public Maze3d call() throws Exception 
-				{*/
+				public Maze3d call()
+				{
 			 		 Maze3dGenerator m3dG;
 			         if(st.getAlgocreate().equals("Simple"))
 						 m3dG= new SimpleMaze3dGenerator();
@@ -193,33 +177,30 @@ public class MyModel extends Observable implements Model
 			        Maze3d m = m3dG.generate(x, y, z);
 					hm.put(name, m);
 					hmsm.put(m, null);
+					return m;
+				}
+			});
+				try {
 					if(s.equals("GUI"))
 					{
 						setChanged();
-						notifyObservers(m);
+					notifyObservers(f.get());
 					}
-					if(s.equals("CLI"))
-					{
-						setChanged();
-						notifyObservers("the maze <"+name+"> is ready");
-					}
-				//}
-			//});
-			
-			
-		
-			
+				if(s.equals("CLI"))
+				{
+					setChanged();
+					notifyObservers("the maze <"+name+"> is ready");
+				}
+				} catch (InterruptedException | ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		}
 		else if(hm.containsKey(name))
 		{
 			setChanged();
 			notifyObservers("The maze is already exist");
-		}
-		/*Maze3d m = m3dG.generate(x, y, z);
-		hm.put(name,m);
-		setChanged();
-		notifyObservers(m);*/
-	    
+		}	    
 	}
 	
 	/**
@@ -288,8 +269,6 @@ public class MyModel extends Observable implements Model
 			setChanged();
 			notifyObservers("fail to open file");
 		}
-		//setChanged();
-	//	notifyObservers(hm.get(name));
 	}
 	
 	/**
@@ -344,56 +323,60 @@ public class MyModel extends Observable implements Model
 	@Override
 	public void solveM3d(String name,String as)
 	{
-		CommonSearcher<Postion> s;
-		if(st.getDefultSolAlgo().equals("Bfs"))
-			s=new Bfs<Postion>(new CostComp<Postion>());
-		else
-			s=new Astar<Postion>(new MazeDistanse(), new CostComp<Postion>());
 		if(hm.containsKey(name))
 		{
 			
 			if(hmsm.get(hm.get(name))==null)
 			{
-				Solution<Postion> a = new Solution<Postion>();
-				a = s.search(new SearchableAdapter(hm.get(name)));
-				hms.put(name, a);
-				if(as.equals("GUI"))
-				{
-					setChanged();
-					notifyObservers(a);
+				Future <Solution<Postion>> f = ex.submit(new Callable<Solution<Postion>>() {
+
+					@Override
+					public Solution<Postion> call() throws Exception {
+						CommonSearcher<Postion> s;
+						if(st.getDefultSolAlgo().equals("Bfs"))
+							s=new Bfs<Postion>(new CostComp<Postion>());
+						else
+							s=new Astar<Postion>(new MazeDistanse(), new CostComp<Postion>());
+						Solution<Postion> a = new Solution<Postion>();
+						a = s.search(new SearchableAdapter(hm.get(name)));
+						hms.put(name, a);
+						hms.put(name+"Solution",a);
+						hmsm.put(hm.get(name),a);
+						return a;
+					}
+				});
+					try {
+						if(as.equals("GUI"))
+						{
+							setChanged();
+							notifyObservers(f.get());
+						}
+						if(as.equals("CLI"))
+						{
+							setChanged();
+							notifyObservers("Solution for the maze < "+name+" > is ready");
+						}
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					} catch (ExecutionException e) {
+						e.printStackTrace();
+					}
 				}
-				if(s.equals("CLI"))
-				{
-					setChanged();
-					notifyObservers("Solution for the maze <"+name+"> is ready");
-				}
-			/*Future <Solution<Postion>> f = ex.submit(new Solve_Callable(s, new SearchableAdapter(hm.get(name))));
-			 try {
-				 hms.put(name+"Solution",f.get());
-				 hmsm.put(hm.get(name),f.get());
-				 setChanged();
-			     notifyObservers("Solution <"+name+"> is ready");
-			      
-			} catch (InterruptedException | ExecutionException e) {
-				
-			};*/
-			 
 			}
 			else if(hmsm.get(hm.get(name)) != null)
 			 {
-				if(s.equals("GUI"))
+				if(as.equals("GUI"))
 				{
 					setChanged();
 					notifyObservers(hmsm.get(hm.get(name)));
 				}
-				if(s.equals("CLI"))
+				if(as.equals("CLI"))
 				{
 					setChanged();
 					notifyObservers("Solution for the maze <"+name+"> is already exist");
 				}
 
 			 }
-		}
 		else
 		{
 			setChanged();
@@ -430,37 +413,33 @@ public class MyModel extends Observable implements Model
 	 * @param p is the position we are in the maze
 	 * @return  nothing
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "unused" })
 	@Override
 	public void hint(String name, Postion p)
 	{
 		
 		if(hm.containsKey(name))
 		{
-			CommonSearcher<Postion> s;
-			if(st.getDefultSolAlgo().equals("Bfs"))
-				s=new Bfs<Postion>(new CostComp<Postion>());
-			else
-				s=new Astar<>(new MazeDistanse(), new CostComp<Postion>());
 			if(hmsm.get(hm.get(name))==null)
 			{
-				Solution<Postion> a = new Solution<Postion>();
-				a = s.search(new SearchableAdapter(hm.get(name)));
-				hms.put(name+"Solution", a);
-				Postion p1 = new Postion(dis(p,a));
-				setChanged();
-				notifyObservers(p1);
-			/*Future <Solution<Postion>> f = ex.submit(new Solve_Callable(s, new SearchableAdapter(hm.get(name))));
-			 try {
-				 hms.put(name+"Solution",f.get());
-				 hmsm.put(hm.get(name),f.get());
-				 setChanged();
-			     //notifyObservers("Solution <"+name+"> is ready");
-			      
-			} catch (InterruptedException | ExecutionException e) {
-				
-			};*/
-			 
+				Future <Postion> f = ex.submit(new Callable<Postion>() {
+
+					@Override
+					public algorithms.mazeGenerators.Postion call() throws Exception {
+						CommonSearcher<Postion> s;
+						if(st.getDefultSolAlgo().equals("Bfs"))
+							s=new Bfs<Postion>(new CostComp<Postion>());
+						else
+							s=new Astar<>(new MazeDistanse(), new CostComp<Postion>());
+						Solution<Postion> a = new Solution<Postion>();
+						a = s.search(new SearchableAdapter(hm.get(name)));
+						hms.put(name+"Solution", a);
+						Postion p1 = new Postion(dis(p,a));
+						setChanged();
+						notifyObservers(p1);
+						return p1;
+					}
+				});	 
 			}
 			else if(hmsm.get(hm.get(name)) != null)
 			 {

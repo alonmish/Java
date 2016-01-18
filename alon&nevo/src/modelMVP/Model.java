@@ -6,9 +6,7 @@ import java.io.FileOutputStream;
 import java.util.HashMap;
 
 import algorithms.mazeGenerators.Maze3d;
-import algorithms.mazeGenerators.Maze3dGenerator;
 import algorithms.mazeGenerators.Postion;
-import algorithms.search.CommonSearcher;
 import presenter.Properties;
 
 public interface Model 

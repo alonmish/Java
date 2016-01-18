@@ -1,12 +1,5 @@
 package Boot;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
-import ViewMVP.CLI;
-import ViewMVP.MyView;
-import controller.MyController;
-import model.MyModel;
 
 public class Run {
 

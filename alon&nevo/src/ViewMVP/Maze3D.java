@@ -23,6 +23,7 @@ public class Maze3D extends MazeDisplayer {
 	public int exitX=0;
 	public int exitY=2;
 	
+	@SuppressWarnings("unused")
 	private void paintCube(double[] p,double h,PaintEvent e){
         int[] f=new int[p.length];
         for(int k=0;k<f.length;f[k]=(int)Math.round(p[k]),k++);

@@ -1,7 +1,6 @@
 package presenter;
 
 
-import algorithms.mazeGenerators.SimpleMaze3dGenerator;
 import modelMVP.Model;
 
 

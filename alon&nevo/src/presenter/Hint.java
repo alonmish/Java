@@ -1,8 +1,6 @@
 package presenter;
 
 import algorithms.mazeGenerators.Postion;
-import algorithms.search.Bfs;
-import algorithms.search.CostComp;
 import modelMVP.Model;
 
 public class Hint implements Command {

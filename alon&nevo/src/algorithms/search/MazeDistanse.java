@@ -9,6 +9,7 @@ import algorithms.mazeGenerators.Postion;
  * @param goalstate is the the goal the end of the distance
  * @return  nothing
  */
+@SuppressWarnings("rawtypes")
 public class MazeDistanse implements Heuristic
 {
 	private State<Postion> goalState;
