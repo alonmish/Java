@@ -112,8 +112,6 @@ public class SettingsWindow extends BasicWindow {
 							String selected = fd.open();
 							if(selected!=null)
 							{
-								System.out.println("Selected not null");
-								System.out.println(selected);
 								String[] x= new String[2];
 								x[0]="SaveXML";
 								x[1]=selected;

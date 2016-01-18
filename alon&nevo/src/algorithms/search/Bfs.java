@@ -16,7 +16,6 @@ public class Bfs<T> extends CommonSearcher<T>
 	 * @return  nothing
 	 */
 	public Bfs(Comparator<State<T>> c) {
-		// TODO Auto-generated constructor stub
 		super(c);
 	}
 	
@@ -28,34 +27,29 @@ public class Bfs<T> extends CommonSearcher<T>
 	@Override
 	public Solution<T> search(Searchable<T> s)
 	{	
-		System.out.println("1");
 		State<T> start = s.getInitialstate() ;
 		start.setCost(calculateCost(start));
 		openList.add(start) ;  
 		HashSet<State<T>> closedSet = new HashSet<State<T>>() ;
 		while(openList.size()>0)
 		{
-			//System.out.println("2");
 			State<T> n = popOpenList() ;
 			//n.setCost(calculateCost(n)) ;
 			closedSet.add(n);
 			
 			if(n.equals(s.getGoalState()))
 			{
-				System.out.println("3");
 				return backTrace(n,s.getInitialstate()) ;
 			}
 			
 			ArrayList<State<T>> successors = s.getAllPossibleStates(n);
 			if(successors == null)
 				{
-					System.out.println("8");
 					return null ;
 				}
 			for(State<T> state : successors)
 				
 				if( (!closedSet.contains(state)) && (!openList.contains(state)) ){
-					//System.out.println("6");
 					state.setCameFrom(n);
 					openList.add(state);
 					
@@ -79,7 +73,6 @@ public class Bfs<T> extends CommonSearcher<T>
 					
 				}
 		}
-		System.out.println("7");
 		return null;
 		
 	}

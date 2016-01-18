@@ -43,19 +43,6 @@ public class MyModel extends Observable implements Model
 		this.hmsm= new HashMap<Maze3d, Solution<Postion>>();
 	    this.ex= Executors.newFixedThreadPool(10);
 	    this.st= new Properties();
-	    /*ObjectInputStream o;
-		try {
-			o = new ObjectInputStream(new GZIPInputStream(new FileInputStream("MSHM")));
-			try {
-				this.hmsm = (HashMap<Maze3d, Solution<Postion>>)o.readObject();
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
 	}
 	
 	public Properties getSt() {
@@ -67,6 +54,7 @@ public class MyModel extends Observable implements Model
 		this.st.setDefultSolAlgo(st.getDefultSolAlgo());
 		this.st.setNumberOfThread(st.getNumberOfThread());
 		this.st.setView(st.getView());
+		this.ex = Executors.newFixedThreadPool(this.st.getNumberOfThread());
 	}
 
 	public HashMap<String, Maze3d> getHm() 
@@ -192,7 +180,6 @@ public class MyModel extends Observable implements Model
 					notifyObservers("the maze <"+name+"> is ready");
 				}
 				} catch (InterruptedException | ExecutionException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 		}
@@ -504,14 +491,11 @@ public class MyModel extends Observable implements Model
 	 */
 	@Override
 	public void changeXMLFile(String name) {
-			System.out.println(2);
 			Properties properties ; 
 			XMLDecoder read = null;
 			try {
 				read = new XMLDecoder(new FileInputStream(name));
-				properties = (Properties)read.readObject() ;
-				/*int numberOfThread = properties.getNumberOfThread();
-				String defultSolAlgo = properties.getDefultSolAlgo() ;*/
+				properties = (Properties)read.readObject();
 				setSt(properties);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();

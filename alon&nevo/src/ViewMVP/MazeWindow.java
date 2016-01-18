@@ -54,73 +54,16 @@ public class MazeWindow extends BasicWindow
 	public void ss(Solution<Postion> x)
 	{
 		
-			try {
 				for (int i = 0; i < x.getS().size(); i++) 
 				{
 					Postion p = new Postion(x.getS().get(x.getS().size()-i-1).getState());
 					hint(p);
-					Thread.sleep(3000);
 					if(p.equals(m3d.getGoal()))
 					{
 						return;
 					}
 				}
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 	}
-	
-		/*Timer timer=new Timer();
-		TimerTask task=new TimerTask() {
-			
-			@Override
-			public void run() {
-				for (int i = 0; i < x.getS().size(); i++) 
-				{
-					Postion p = new Postion(x.getS().get(x.getS().size()-i-1).getState());
-					md.setMazeData2D(m3d.getCrossSectionByX(p.getX()));
-					md.setCharacterPosition(p.getY(), p.getX(), p.getZ());
-					if(p.equals(m3d.getGoal()))
-					{
-						return;
-					}
-				}
-			}
-		};
-		timer.scheduleAtFixedRate(task, 0, 100);
-		task.cancel();
-		timer.cancel();
-		}*/
-		  
-		
-			
-		//hint(this.m3d.getStart());
-				//System.out.println(p.toString());
-				//this.hint(p);
-		/*for (int i = 0; i < x.getS().size(); i++) {
-			System.out.println(x.getS().get(i).toString());
-		}*/
-		//md.setCharacterPosition(m3d.getStart().getX(), m3d.getStart().getZ(), m3d.getStart().getY());
-		/*Timer timer=new Timer();
-		TimerTask task=new TimerTask() {
-			@Override
-			public void run() {
-				display.syncExec(new Runnable() {
-					@Override
-					public void run() {
-						for (int i = 0; i < x.getS().size(); i++) 
-						{
-							Postion p = new Postion(x.getS().get(x.getS().size()-i-1).getState());
-							hint(p);
-						}
-					}
-				});
-			}
-		};	
-		timer.scheduleAtFixedRate(task, 0, 100);
-		task.cancel();
-		timer.cancel();*/
 	
 	/**
 	 * show as the hint
@@ -140,8 +83,6 @@ public class MazeWindow extends BasicWindow
 	 */
 	public void m3d(Maze3d m3d)
 	{		
-		System.out.println(m3d.getStart().toString()+"123");
-		System.out.println(m3d.getGoal()+"456");
 		if(md != null)
 			md.dispose();
 		this.setM3d(m3d);
